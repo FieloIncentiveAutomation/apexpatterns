@@ -77,6 +77,10 @@ public abstract class SObjectSelector{
         this.lim = lim;
     }
 
+    public void setOrderBy(String orderBy){
+        this.m_orderBy = orderBy;
+    }
+
     public String getOffsetCondition(){
         if(this.offset != null){
             return ' OFFSET ' + String.valueOf(offset);
