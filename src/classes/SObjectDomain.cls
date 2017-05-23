@@ -63,12 +63,17 @@ public virtual with sharing class SObjectDomain {
      * Useful during unit testing to access mock support for database inserts and udpates (testing without DML)
      **/
     public static TestFactory Test  {get; private set;}
+    
+    /**
+     * Set for keeping the Ids of records with errors
+     **/
+    protected Set<Id> RecordErrors {get; private set;}
 
     /**
      * Retains instances of domain classes implementing trigger stateful
      **/
     private static Map<Type, List<SObjectDomain>> TriggerStateByClass;
-
+    
     static
     {
         Errors = new ErrorFactory();
@@ -106,6 +111,8 @@ public virtual with sharing class SObjectDomain {
         SObjectDescribe = sObjectType.getDescribe();
         // Configure the Domain object instance
         Configuration = new Configuration();
+        // Initialises set RecordErrors
+        RecordErrors = new Set<Id>();
     }
 
     /**
@@ -393,7 +400,32 @@ public virtual with sharing class SObjectDomain {
         domain.Records = records;
         return domain;
     }
-
+    
+    /**
+    * Adds an error to a register and adds it to the list attribute "RecordErrors"
+    **/
+    protected void addError(SObject record, String message)
+    {
+        if(record.Id != null) {
+            record.addError(message);
+            RecordErrors.add(record.Id);
+        } else {
+            throw new DomainException('Record without an Id.');
+        }
+    }
+    
+    /**
+    * Checks if a determined record has an error through its Id
+    **/
+    protected Boolean hasError(Id id)
+    {
+        if(id != null) {
+            return RecordErrors.contains(id);
+        } else {
+            throw new DomainException('Id is null.');
+        }
+    }
+    
     /**
      * Fluent style Configuration system for Domain class creation
      **/
