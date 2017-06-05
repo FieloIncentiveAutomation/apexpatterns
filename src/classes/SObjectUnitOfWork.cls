@@ -55,7 +55,7 @@ public virtual class SObjectUnitOfWork{
     private List<Schema.SObjectType> m_sObjectTypes = new List<Schema.SObjectType>();
     public Map<String, List<SObject>> m_newListByType = new Map<String, List<SObject>>();
     public Map<String, Map<Id, SObject>> m_dirtyMapByType = new Map<String, Map<Id, SObject>>();
-    private Map<String, Map<Id, SObject>> m_deletedMapByType = new Map<String, Map<Id, SObject>>();
+    public Map<String, Map<Id, SObject>> m_deletedMapByType = new Map<String, Map<Id, SObject>>();
     private Map<String, Relationships> m_relationships = new Map<String, Relationships>();
     private List<IDoWork> m_workList = new List<IDoWork>();
     private SendEmailWork m_emailWork = new SendEmailWork();
