@@ -38,7 +38,7 @@
  * http://martinfowler.com/eaaCatalog/domainModel.html
  *
  **/
-public virtual class SObjectDomain {
+public without sharing virtual class SObjectDomain {
     /**
      * Provides access to the data represented by this domain class
      **/
