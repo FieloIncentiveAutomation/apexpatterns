@@ -38,7 +38,7 @@
  * http://martinfowler.com/eaaCatalog/domainModel.html
  *
  **/
-public virtual with sharing class SObjectDomain {
+public without sharing virtual class SObjectDomain {
     /**
      * Provides access to the data represented by this domain class
      **/
@@ -199,8 +199,8 @@ public virtual with sharing class SObjectDomain {
      **/
     public virtual void handleAfterInsert()
     {
-        if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isCreateable())
-           throw new DomainException('Permission to create an ' + SObjectDescribe.getName() + ' denied.');
+        //if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isCreateable())
+           //throw new DomainException('Permission to create an ' + SObjectDescribe.getName() + ' denied.');
 
 
         onAfterInsert();
@@ -213,8 +213,8 @@ public virtual with sharing class SObjectDomain {
      **/
     public virtual void handleAfterUpdate(Map<Id,SObject> existingRecords)
     {
-        if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isUpdateable())
-           throw new DomainException('Permission to udpate an ' + SObjectDescribe.getName() + ' denied.');
+        //if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isUpdateable())
+           //throw new DomainException('Permission to udpate an ' + SObjectDescribe.getName() + ' denied.');
 
         //Comentado por Diego --> Ver Configuration.OldOnUpdateValidateBehaviour en detalle
         //if(Configuration.OldOnUpdateValidateBehaviour)
@@ -232,8 +232,8 @@ public virtual with sharing class SObjectDomain {
      **/
     public virtual void handleAfterDelete()
     {
-        if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isDeletable())
-           throw new DomainException('Permission to delete an ' + SObjectDescribe.getName() + ' denied.');
+        //if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isDeletable())
+           //throw new DomainException('Permission to delete an ' + SObjectDescribe.getName() + ' denied.');
 
         onAfterDelete();
     }
@@ -245,8 +245,8 @@ public virtual with sharing class SObjectDomain {
      **/
     public virtual void handleAfterUndelete()
     {
-        if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isCreateable())
-           throw new DomainException('Permission to create an ' + SObjectDescribe.getName() + ' denied.');
+        //if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isCreateable())
+           //throw new DomainException('Permission to create an ' + SObjectDescribe.getName() + ' denied.');
 
         onAfterUndelete();
     }
