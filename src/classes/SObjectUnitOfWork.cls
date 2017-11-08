@@ -237,10 +237,10 @@ public virtual class SObjectUnitOfWork{
      **/
     public void registerNew(SObject record, Schema.sObjectField relatedToParentField, SObject relatedToParentRecord){
         if(record.Id != null)
-            throw new UnitOfWorkException('Only new records can be registered as new');
+            throw new UnitOfWorkException(label.FieloPLT.OnlyNewRecordsRegisteredAsNew);
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_newListByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format('SObject type {0} is not supported by this unit of work', new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         m_newListByType.get(sObjectType).add(record);
         if(relatedToParentRecord!=null && relatedToParentField!=null)
             registerRelationship(record, relatedToParentField, relatedToParentRecord);
@@ -257,7 +257,7 @@ public virtual class SObjectUnitOfWork{
     public void registerRelationship(SObject record, Schema.sObjectField relatedToField, SObject relatedTo){
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_newListByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format('SObject type {0} is not supported by this unit of work', new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         if(m_dirtyMapByType.get(sObjectType).containsKey(record.Id)){
             m_relationships.get(sObjectType).add(m_dirtyMapByType.get(sObjectType).get(record.Id), relatedToField, relatedTo);
         }else{
@@ -275,12 +275,12 @@ public virtual class SObjectUnitOfWork{
     }
 
     public void registerDirty(SObject record, List<String> fields){
-    	SObjectType objType = record.getSObjectType();
-    	Map<String, Schema.SObjectField> fieldsMap = objType.getDescribe().fields.getMap();
-    	List<Schema.sObjectField> fieldsToEdit = new List<Schema.sObjectField>();
-    	for(String field : fields){
-    		fieldsToEdit.add(fieldsMap.get(field));
-    	}
+        SObjectType objType = record.getSObjectType();
+        Map<String, Schema.SObjectField> fieldsMap = objType.getDescribe().fields.getMap();
+        List<Schema.sObjectField> fieldsToEdit = new List<Schema.sObjectField>();
+        for(String field : fields){
+            fieldsToEdit.add(fieldsMap.get(field));
+        }
         registerDirty(record, null, null, fieldsToEdit);
     }
 
@@ -294,13 +294,13 @@ public virtual class SObjectUnitOfWork{
 
     public void registerDirty(SObject record, Schema.sObjectField relatedToParentField, SObject relatedToParentRecord, List<Schema.sObjectField> fieldsToEdit){
         if(record.Id == null)
-            throw new UnitOfWorkException('New records cannot be registered as dirty');
+            throw new UnitOfWorkException(label.FieloPLT.RecordCannotBeRegisteredAsDirty);
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_dirtyMapByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format('SObject type {0} is not supported by this unit of work', new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         if(fieldsToEdit != null && m_dirtyMapByType.get(sObjectType).containsKey(record.Id)){
-            
-            for(Schema.sObjectField field : fieldsToEdit){                
+
+            for(Schema.sObjectField field : fieldsToEdit){
                 m_dirtyMapByType.get(sObjectType).get(record.Id).put(field, record.get(field));
             }
         }else{
@@ -329,10 +329,10 @@ public virtual class SObjectUnitOfWork{
      **/
     public void registerDeleted(SObject record){
         if(record.Id == null)
-            throw new UnitOfWorkException('New records cannot be registered for deletion');
+            throw new UnitOfWorkException(label.FieloPLT.NewRecordsCannotRegisteredDeletion);
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_deletedMapByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format('SObject type {0} is not supported by this unit of work', new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         m_deletedMapByType.get(sObjectType).put(record.Id, record);
     }
 
@@ -398,9 +398,9 @@ public virtual class SObjectUnitOfWork{
                 SObjectType currentObjectType = m_sObjectTypes[objectIdx--];
                 String objName = currentObjectType.getDescribe().getName();
                 if(m_deletedMapByType.get(objName).values().isEmpty() || currentObjectType.getDescribe().isDeletable()){
-                    resultsMap.get(objName).addDeleteResults(m_dml.dmlDelete(m_deletedMapByType.get(objName).values()));  
+                    resultsMap.get(objName).addDeleteResults(m_dml.dmlDelete(m_deletedMapByType.get(objName).values()));
                 }else{
-                    throw new UnitOfWorkException('You can not delete these records');
+                    throw new FieloException(label.FieloPLT.CannotDeleteRecords);
                 }
             }
             // notify we're done with DML

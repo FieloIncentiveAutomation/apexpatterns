@@ -106,10 +106,13 @@ public class QueryFactory { //No explicit sharing declaration - inherit from cal
                 }else if(token != null && !i.hasNext()){
                     fieldPath.add(token);
                 }else{
-                    if(token == null)
+                    if(token == null){
                         throw new InvalidFieldException(field,lastSObjectType);
-                    else
-                        throw new NonReferenceFieldException(lastSObjectType+'.'+field+' is not a lookup or master-detail field but is used in a cross-object query field.');
+                    }
+                    else{
+                        // Label : {0}. {1} is not a lookup or master-detail field but is used in a cross-object query field.
+                        throw new NonReferenceFieldException(String.format(label.FieloPLT.QueryErrorInvalidRelationship, new List<String>{string.valueOf(lastSObjectType), field}));
+                    }
                 }
             }
             result = new QueryField(fieldPath);
@@ -263,11 +266,15 @@ public class QueryFactory { //No explicit sharing declaration - inherit from cal
      * @exception InvalidFieldSetException if the fieldset is invalid for table {@code fields}.
     **/
     public QueryFactory selectFieldSet(Schema.FieldSet fieldSet, Boolean allowCrossObject){
-        if(fieldSet.getSObjectType() != table)
-            throw new InvalidFieldSetException('Field set "'+fieldSet.getName()+'" is not for SObject type "'+table+'"');
+        if(fieldSet.getSObjectType() != table){
+            // Label: Field set "{0}" is not for SObject type "{1}".
+            throw new InvalidFieldSetException(String.format(label.FieloPLT.QueryErrorInvalidFieldSet, new List<String>{fieldSet.getName(), string.valueOf(table)}));
+        }
         for(Schema.FieldSetMember field: fieldSet.getFields()){
-            if(!allowCrossObject && field.getFieldPath().contains('.'))
-                throw new InvalidFieldSetException('Cross-object fields not allowed and field "'+field.getFieldPath()+'"" is a cross-object field.');
+            if(!allowCrossObject && field.getFieldPath().contains('.')){
+                // Label: Cross-object fields not allowed and field "{0}" is a cross-object field.
+                throw new InvalidFieldSetException(String.format(label.FieloPLT.QueryErrorCrossObjectFields, new List<String>{field.getFieldPath()}));
+            }
             fields.add( getFieldToken(field.getFieldPath()) );
         }
         return this;
@@ -364,7 +371,8 @@ public class QueryFactory { //No explicit sharing declaration - inherit from cal
         if (relationship != null) {
             return setSubselectQuery(relationship, assertIsAccessible);
         }
-        throw new InvalidSubqueryRelationshipException('Invalid call to subselectQuery with relationshipName = '+relationshipName +'.  Relationship does not exist for ' + table.getDescribe().getName());
+        // Label: Invalid call to subselectQuery with relationshipName = {0}.  Relationship does not exist for {1}
+        throw new InvalidSubqueryRelationshipException(String.format(label.FieloPLT.QueryErrorInvalidCall, new List<String>{relationshipName,table.getDescribe().getName()}));
     }
 
     /**
@@ -396,7 +404,7 @@ public class QueryFactory { //No explicit sharing declaration - inherit from cal
     **/
     private QueryFactory setSubselectQuery(ChildRelationship relationship, Boolean assertIsAccessible){
         if (this.relationship != null){
-            throw new InvalidSubqueryRelationshipException('Invalid call to subselectQuery.  You may not add a subselect query to a subselect query.');
+            throw new InvalidSubqueryRelationshipException(label.FieloPLT.QueryErrorInvalidCall2);
         }
         if (this.subselectQueryMap == null){
             this.subselectQueryMap = new Map<ChildRelationship, QueryFactory>();
@@ -433,7 +441,8 @@ public class QueryFactory { //No explicit sharing declaration - inherit from cal
                 return childRow;
             }
         }
-        throw new InvalidSubqueryRelationshipException('Invalid call to subselectQuery.  Invalid relationship for table '+table + ' and objtype='+objType);
+        // Label: Invalid call to subselectQuery. Invalid relationship for table {0} and objtype = {1}.
+        throw new InvalidSubqueryRelationshipException(String.format(label.FieloPLT.QueryErrorInvalidCall3, new List<String>{string.valueOf(table), string.valueOf(objType)}));
     }
 
     /**
@@ -658,14 +667,18 @@ public class QueryFactory { //No explicit sharing declaration - inherit from cal
 
         @testVisible
         private QueryField(List<Schema.SObjectField> fields){
-            if(fields == null || fields.size() == 0)
-                throw new InvalidFieldException('Invalid field: null');
+            if(fields == null || fields.size() == 0){
+                // Label: Invalid field: null
+                throw new InvalidFieldException(label.FieloPLT.ErrorQueryInvalidFieldNull);
+            }
             this.fields = fields.clone(); //don't let clients mutate after setting!
         }
         @testVisible
         private QueryField(Schema.SObjectField field){
-            if(field == null)
-                throw new InvalidFieldException('Invalid field: null');
+            if(field == null){
+                // Label: Invalid field: null
+                throw new InvalidFieldException(label.FieloPLT.ErrorQueryInvalidFieldNull);
+            }
             fields = new List<Schema.SObjectField>{ field };
         }
         public override String toString(){
@@ -730,7 +743,8 @@ public class QueryFactory { //No explicit sharing declaration - inherit from cal
         public InvalidFieldException(String fieldname, Schema.SObjectType objectType){
             this.objectType = objectType;
             this.fieldName = fieldName;
-            this.setMessage( 'Invalid field \''+fieldName+'\' for object \''+objectType+'\'' );
+            // Label: Invalid field '{0}' for object '{1}'.
+            this.setMessage(String.format(label.FieloPLT.QueryErrorInvalidField, new List<String>{string.valueOf(fieldName),string.valueOf(objectType)}));
         }
     }
     public class InvalidFieldSetException extends Exception{}
