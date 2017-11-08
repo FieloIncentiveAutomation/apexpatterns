@@ -366,7 +366,7 @@ public class SObjectDescribe {
 	  	Map<ID, Schema.RecordTypeInfo> currentMap;
 	  	// Si no esta la clave del objeto hace el describe y lo guarda (sino lo busca del mapa)
 	  	if ( !mapGlobalRecordTypes.containsKey(objectName) ) {
-			Schema.DescribeSObjectResult[] describeObjects = FieloPLT.SObjectDescribe.describeSObjects(  new List<String>{objectName} );
+			Schema.DescribeSObjectResult[] describeObjects = SObjectDescribe.describeSObjects(  new List<String>{objectName} );
 	  		currentMap = describeObjects.get(0).getRecordTypeInfosById();
 	  		// Si tiene un solo recordtype master => lo deja nulo (por que los objetos sin record type lo traen )
 	  		if ( currentMap.size() == 1 && currentMap.values().get(0).isMaster())  {
