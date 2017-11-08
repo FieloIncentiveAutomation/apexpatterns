@@ -73,12 +73,40 @@ public class SObjectDescribe {
 		}
 		set;
 	}
+	private static Map<String, Map<ID, Schema.RecordTypeInfo>> mapGlobalRecordTypes { get {
+	  	if ( mapGlobalRecordTypes == null ) {
+	  		mapGlobalRecordTypes = new Map<String, Map<ID, Schema.RecordTypeInfo>>(); 
+	  	}
+	  	return mapGlobalRecordTypes;
+	} set; }  
+
+	private static Map<String, Schema.SObjectType> mapGlobalDescribe{
+		get{
+			if(mapGlobalDescribe == null){
+				mapGlobalDescribe = Schema.getGlobalDescribe();
+			}	
+			return mapGlobalDescribe;
+		}
+		set;
+	}
+	private static Set<String> fieloObjects{
+		get{
+			if(fieloObjects == null){
+				fieloObjects = new Set<String>();
+				for(EntityDefinition ed : [SELECT QualifiedApiName FROM EntityDefinition where (NOT QualifiedApiName Like '%__history%') and  NamespacePrefix = 'FieloPLT']){
+					fieloObjects.add(ed.QualifiedApiName.toLowercase().removeStart('fieloplt__'));
+				}
+        	}
+			return fieloObjects;
+		}
+		set;
+	}
 
 	private SObjectDescribe(Schema.SObjectType token){
 		if(token == null)
-			throw new InvalidDescribeException('Invalid SObject type: null');
+			throw new InvalidDescribeException(label.FieloPLT.InvalidSObjectTypeNull);
 		if(instanceCache.containsKey( String.valueOf(token) ))
-			throw new DuplicateDescribeException(token + ' is already in the describe cache');
+			throw new DuplicateDescribeException(String.format(label.FieloPLT.AlreadyInDescribeCache, new List<String>{String.valueOf(token)}));
 		this.token = token;
 		instanceCache.put( String.valueOf(token).toLowerCase() , this);
 	}
@@ -332,6 +360,50 @@ public class SObjectDescribe {
 		}
 
 	}
+
+	public static Map<ID, Schema.RecordTypeInfo> getMapRecordTypes ( String objectName) {
+	  	// Si el mapa esta vacio lo crea
+	  	Map<ID, Schema.RecordTypeInfo> currentMap;
+	  	// Si no esta la clave del objeto hace el describe y lo guarda (sino lo busca del mapa)
+	  	if ( !mapGlobalRecordTypes.containsKey(objectName) ) {
+			Schema.DescribeSObjectResult[] describeObjects = FieloPLT.SObjectDescribe.describeSObjects(  new List<String>{objectName} );
+	  		currentMap = describeObjects.get(0).getRecordTypeInfosById();
+	  		// Si tiene un solo recordtype master => lo deja nulo (por que los objetos sin record type lo traen )
+	  		if ( currentMap.size() == 1 && currentMap.values().get(0).isMaster())  {
+	  			currentMap = null;
+	  		}
+ 			mapGlobalRecordTypes.put( objectName , currentMap );
+	  	}
+	  	return mapGlobalRecordTypes.get( objectName );
+	}
+
+
+	public static List<Schema.DescribeSObjectResult> describeSObjects(List<String> objectNames){
+		//poner todo toLowercase para evitar duplicados
+		List<Schema.DescribeSObjectResult> result = new List<Schema.DescribeSObjectResult>();
+
+		Set<String> conflictedObjects = new Set<String>();
+		Set<String> allNames = new Set<String>();
+		for(String name : objectNames){
+			String toLowercase = name.toLowerCase();
+			allNames.add(toLowercase);
+			if(fieloObjects.contains(toLowerCase)){
+				conflictedObjects.add(toLowerCase);
+			}
+		}
+
+		if(conflictedObjects.isEmpty()){//no hay conflictivos
+			result = Schema.describeSObjects(new List<String>(allNames));
+		}else{
+			for(String name : allNames){
+				result.add(mapGlobalDescribe.get(name).getDescribe());
+			}
+		}
+
+		return result;
+	}
+
+
 	/**
 	 * A subclass of NamespacedAttributeMap for handling the data returned by #Schema.getGlobalDescribe
 	**/
@@ -351,6 +423,7 @@ public class SObjectDescribe {
 			return (List<Schema.SObjectType>) values.values();
 		}
 	}
+
 
 
 	public abstract class DescribeException extends Exception{}
