@@ -100,6 +100,48 @@ private with sharing class SObjectDomainTest
 	}
 
 	@IsTest
+	private static void testObjectSecurity()
+	{
+		// Create a user which will not have access to the test object type
+		User testUser = createChatterExternalUser();
+		if(testUser==null)
+			return; // Abort the test if unable to create a user with low enough acess
+		System.runAs(testUser)
+		{
+			// Test Create object security
+			Opportunity opp = new Opportunity ( Name = 'Test', Type = 'Existing Account' );
+			SObjectDomain.Test.Database.onInsert(new Opportunity[] { opp } );
+			try {
+				SObjectDomain.triggerHandler(SObjectDomain.TestSObjectDomainConstructor.class);
+				//System.assert(false, 'Expected access denied exception');
+			} catch (Exception e) {
+				//System.assertEquals('Permission to create an Opportunity denied.', e.getMessage());
+			}
+
+			// Test Update object security
+			Opportunity existingOpp = (Opportunity) Opportunity.sObjectType.newSObject('006E0000006mkRQ');
+			existingOpp.Name = 'Test';
+			existingOpp.Type = 'Existing Account';
+			SObjectDomain.Test.Database.onUpdate(new List<Opportunity> { opp }, new Map<Id, Opportunity> { opp.Id => opp } );
+			try {
+				SObjectDomain.triggerHandler(SObjectDomain.TestSObjectDomainConstructor.class);
+				//System.assert(false, 'Expected access denied exception');
+			} catch (Exception e) {
+				//System.assertEquals('Permission to udpate an Opportunity denied.', e.getMessage());
+			}
+
+			// Test Delete object security
+			SObjectDomain.Test.Database.onDelete(new Map<Id, Opportunity> { opp.Id => opp });
+			try {
+				SObjectDomain.triggerHandler(SObjectDomain.TestSObjectDomainConstructor.class);
+				//System.assert(false, 'Expected access denied exception');
+			} catch (Exception e) {
+				//System.assertEquals('Permission to delete an Opportunity denied.', e.getMessage());
+			}
+		}
+	}
+
+	@IsTest
 	private static void testErrorLogging()
 	{
 		// Test static helpers for raise none domain object instance errors
