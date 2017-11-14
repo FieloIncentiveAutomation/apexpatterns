@@ -397,8 +397,7 @@ public virtual class SObjectUnitOfWork{
             while(objectIdx>=0){
                 SObjectType currentObjectType = m_sObjectTypes[objectIdx--];
                 String objName = currentObjectType.getDescribe().getName();
-                //code commented for security review
-                if(currentObjectType.getDescribe().isDeletable()){//m_deletedMapByType.get(objName).values().isEmpty() || 
+                if(m_deletedMapByType.get(objName).values().isEmpty() || currentObjectType.getDescribe().isDeletable()){
                     resultsMap.get(objName).addDeleteResults(m_dml.dmlDelete(m_deletedMapByType.get(objName).values()));
                 }else{
                     throw new FieloException(label.FieloPLT.CannotDeleteRecords);
