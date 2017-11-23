@@ -217,18 +217,18 @@ private with sharing class SObjectSelectorTest
 		}
 
 		public List<Schema.SObjectField> getSObjectFieldList()
-	       {        
-		   List<Schema.SObjectField> lst =  new List<Schema.SObjectField> {
-		       Account.Name,
-		       Account.Id,
-		       Account.AccountNumber,
-		       Account.AnnualRevenue
-		   };
-		   if(Userinfo.isMultiCurrencyOrganization()) {
-		       lst.add( Schema.SObjectType.Account.fields.getMap().get('CurrencyIsoCode') );
-		   }            
-		   return lst;
-	       }
+	    {        
+		   	List<Schema.SObjectField> lst =  new List<Schema.SObjectField> {
+				Account.Name,
+				Account.Id,
+				Account.AccountNumber,
+				Account.AnnualRevenue
+		   	};
+		   	if(Userinfo.isMultiCurrencyOrganization()) {
+		    	lst.add( Schema.SObjectType.Account.fields.getMap().get('CurrencyIsoCode') );
+		   	}
+		   	return lst;
+	    }
 
 		public Schema.SObjectType getSObjectType()
 		{
