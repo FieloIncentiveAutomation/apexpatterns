@@ -400,7 +400,7 @@ public virtual class SObjectUnitOfWork{
                 if(m_deletedMapByType.get(objName).values().isEmpty() || currentObjectType.getDescribe().isDeletable()){
                     resultsMap.get(objName).addDeleteResults(m_dml.dmlDelete(m_deletedMapByType.get(objName).values()));
                 }else{
-                    throw new FieloException(label.CannotDeleteRecords);
+                    throw new UnitOfWorkException(label.CannotDeleteRecords);
                 }
             }
             // notify we're done with DML
