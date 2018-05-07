@@ -89,12 +89,26 @@ public class SObjectDescribe {
 		}
 		set;
 	}
+	private static String namespace {
+		get{
+			if(namespace == null){
+	      try { 
+	          ApexClass cs =[select NamespacePrefix from ApexClass where Name = 'SObjectDescribe' LIMIT 1];
+	          namespace = cs.NamespacePrefix;
+	      } catch ( Exception e ) {
+	      	namespace = '';
+	      }
+			}	
+			return namespace;
+		}
+		set;
+	}
 	private static Set<String> fieloObjects{
 		get{
 			if(fieloObjects == null){
 				fieloObjects = new Set<String>();
-				for(EntityDefinition ed : [SELECT QualifiedApiName FROM EntityDefinition where (NOT QualifiedApiName Like '%__history%') and  NamespacePrefix = 'FieloPLT']){
-					fieloObjects.add(ed.QualifiedApiName.toLowercase().removeStart('fieloplt__'));
+				for(EntityDefinition ed : [SELECT QualifiedApiName FROM EntityDefinition where (NOT QualifiedApiName Like '%__history%') and  NamespacePrefix = :namespace]){
+					fieloObjects.add(ed.QualifiedApiName.toLowercase().removeStart(namespace.toLowercase() + '__'));
 				}
         	}
 			return fieloObjects;
@@ -104,9 +118,9 @@ public class SObjectDescribe {
 
 	private SObjectDescribe(Schema.SObjectType token){
 		if(token == null)
-			throw new InvalidDescribeException(label.FieloPLT.InvalidSObjectTypeNull);
+			throw new InvalidDescribeException(label.InvalidSObjectTypeNull);
 		if(instanceCache.containsKey( String.valueOf(token) ))
-			throw new DuplicateDescribeException(String.format(label.FieloPLT.AlreadyInDescribeCache, new List<String>{String.valueOf(token)}));
+			throw new DuplicateDescribeException(String.format(label.AlreadyInDescribeCache, new List<String>{String.valueOf(token)}));
 		this.token = token;
 		instanceCache.put( String.valueOf(token).toLowerCase() , this);
 	}

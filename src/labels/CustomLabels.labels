@@ -1,6 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>RecordCannotBeRegisteredAsDirty</fullName>
+        <categories>SObjectUnitOfWork.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Record: Dirty registration</shortDescription>
+        <value>New records cannot be registered as dirty.</value>
+    </labels>
+    <labels>
+        <fullName>QueryErrorInvalidCall</fullName>
+        <categories>QueryFactory.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error: Invalid call</shortDescription>
+        <value>Invalid call to subselectQuery with relationshipName = {0}. Relationship does not exist for {1}.</value>
+    </labels>
+    <labels>
+        <fullName>ErrorQueryInvalidFieldNull</fullName>
+        <categories>QueryFactory.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error: Invalid Null field</shortDescription>
+        <value>Invalid field: Null.</value>
+    </labels>
+    <labels>
+        <fullName>QueryErrorInvalidCall2</fullName>
+        <categories>QueryFactory.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error: Invalid call 2</shortDescription>
+        <value>Invalid call to subselectQuery. You must not add a subselect query to a subselect query.</value>
+    </labels>
+    <labels>
+        <fullName>QueryErrorInvalidCall3</fullName>
+        <categories>QueryFactory.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error: Invalid call 3</shortDescription>
+        <value>Invalid call to subselectQuery. Invalid relationship for table {0} and objtype = {1}.</value>
+    </labels>
+    <labels>
+        <fullName>QueryErrorCrossObjectFields</fullName>
+        <categories>QueryFactory.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error: Cross-object fields</shortDescription>
+        <value>Cross-object field such as {0} are not allowed.</value>
+    </labels>
+    <labels>
+        <fullName>CannotDeleteRecords</fullName>
+        <categories>SObjectUnitOfWork.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Records: No deletion</shortDescription>
+        <value>Records cannot be deleted.</value>
+    </labels>
+    <labels>
+        <fullName>NewRecordsCannotRegisteredDeletion</fullName>
+        <categories>SObjectUnitOfWork.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>New Records:Deletion</shortDescription>
+        <value>New records cannot be registered for deletion.</value>
+    </labels>
+	<labels>
+      <fullName>OnlyNewRecordsRegisteredAsNew</fullName>
+      <categories>SObjectUnitOfWork.cls</categories>
+      <language>en_US</language>
+      <protected>false</protected>
+      <shortDescription>OnlyNewRecordsRegisteredAsNew</shortDescription>
+      <value>Only new records can be registered as new.</value>
+    </labels>
+    <labels>
+      <fullName>NotSupportedByUnitOfWork</fullName>
+      <categories>SObjectUnitOfWork.cls</categories>
+      <language>en_US</language>
+      <protected>false</protected>
+      <shortDescription>Unit of Work: No support</shortDescription>
+      <value>SObject type {0} is not supported by this unit of work.</value>
+    </labels>
+    <labels>
+      <fullName>QueryErrorInvalidRelationship</fullName>
+      <categories>QueryFactory.cls</categories>
+      <language>en_US</language>
+      <protected>false</protected>
+      <shortDescription>Error: Invalid relationship</shortDescription>
+      <value>{0}. {1} is not a lookup or master-detail field but it is used in a cross-object query field.</value>
+    </labels>
+    <labels>
+        <fullName>InvalidSObjectTypeNull</fullName>
+        <categories>SObjectDescribe.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Invalid SObject Type: Null</shortDescription>
+        <value>Invalid SObject type: Null.</value>
+    </labels>
+    <labels>
+        <fullName>AlreadyInDescribeCache</fullName>
+        <categories>SObjectDescribe.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Object: Described in cache</shortDescription>
+        <value>{0} is already in the described cache.</value>
+    </labels>
+    <labels>
+        <fullName>QueryErrorInvalidField</fullName>
+        <categories>QueryFactory.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error: Invalid field</shortDescription>
+        <value>Invalid field &apos;{0}&apos; for object &apos;{1}&apos;.</value>
+    </labels>
+    <labels>
+      <fullName>QueryErrorInvalidFieldSet</fullName>
+      <categories>QueryFactory.cls</categories>
+      <language>en_US</language>
+      <protected>false</protected>
+      <shortDescription>Error: Invalid Fieldset</shortDescription>
+      <value>Fieldset {0} is not applicable for SObject type {1}.</value>
+    </labels>
+    <labels>
         <fullName>Accomplishment</fullName>
         <categories>ChallengeRewardEditBackEnd.page</categories>
         <language>en_US</language>

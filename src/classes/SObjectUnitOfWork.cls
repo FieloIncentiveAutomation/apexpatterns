@@ -237,10 +237,10 @@ public virtual class SObjectUnitOfWork{
      **/
     public void registerNew(SObject record, Schema.sObjectField relatedToParentField, SObject relatedToParentRecord){
         if(record.Id != null)
-            throw new UnitOfWorkException(label.FieloPLT.OnlyNewRecordsRegisteredAsNew);
+            throw new UnitOfWorkException(label.OnlyNewRecordsRegisteredAsNew);
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_newListByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         m_newListByType.get(sObjectType).add(record);
         if(relatedToParentRecord!=null && relatedToParentField!=null)
             registerRelationship(record, relatedToParentField, relatedToParentRecord);
@@ -257,7 +257,7 @@ public virtual class SObjectUnitOfWork{
     public void registerRelationship(SObject record, Schema.sObjectField relatedToField, SObject relatedTo){
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_newListByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         if(m_dirtyMapByType.get(sObjectType).containsKey(record.Id)){
             m_relationships.get(sObjectType).add(m_dirtyMapByType.get(sObjectType).get(record.Id), relatedToField, relatedTo);
         }else{
@@ -294,10 +294,10 @@ public virtual class SObjectUnitOfWork{
 
     public void registerDirty(SObject record, Schema.sObjectField relatedToParentField, SObject relatedToParentRecord, List<Schema.sObjectField> fieldsToEdit){
         if(record.Id == null)
-            throw new UnitOfWorkException(label.FieloPLT.RecordCannotBeRegisteredAsDirty);
+            throw new UnitOfWorkException(label.RecordCannotBeRegisteredAsDirty);
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_dirtyMapByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         if(fieldsToEdit != null && m_dirtyMapByType.get(sObjectType).containsKey(record.Id)){
 
             for(Schema.sObjectField field : fieldsToEdit){
@@ -329,10 +329,10 @@ public virtual class SObjectUnitOfWork{
      **/
     public void registerDeleted(SObject record){
         if(record.Id == null)
-            throw new UnitOfWorkException(label.FieloPLT.NewRecordsCannotRegisteredDeletion);
+            throw new UnitOfWorkException(label.NewRecordsCannotRegisteredDeletion);
         String sObjectType = record.getSObjectType().getDescribe().getName();
         if(!m_deletedMapByType.containsKey(sObjectType))
-            throw new UnitOfWorkException(String.format(label.FieloPLT.NotSupportedByUnitOfWork, new String[] { sObjectType }));
+            throw new UnitOfWorkException(String.format(label.NotSupportedByUnitOfWork, new String[] { sObjectType }));
         m_deletedMapByType.get(sObjectType).put(record.Id, record);
     }
 
@@ -400,7 +400,7 @@ public virtual class SObjectUnitOfWork{
                 if(m_deletedMapByType.get(objName).values().isEmpty() || currentObjectType.getDescribe().isDeletable()){
                     resultsMap.get(objName).addDeleteResults(m_dml.dmlDelete(m_deletedMapByType.get(objName).values()));
                 }else{
-                    throw new FieloException(label.FieloPLT.CannotDeleteRecords);
+                    throw new UnitOfWorkException(label.CannotDeleteRecords);
                 }
             }
             // notify we're done with DML
